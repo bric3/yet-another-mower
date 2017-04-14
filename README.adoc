@@ -1,0 +1,21 @@
+= Mower
+
+image:https://travis-ci.org/bric3/dead-simple-memcached-server.svg?branch=master["Build Status", link="https://travis-ci.org/bric3/dead-simple-memcached-server"]
+
+
+A simple mowers
+
+
+This project requires java 8 to run. And the launch scripts expect a unix environment (Linux, OSX will do).
+
+```sh
+# Package it
+mvn clean package
+
+# packaged to a tar.gz file
+ls -l target/mower-42.0-SNAPSHOT.tar.gz
+
+
+# run it from target
+./target/mower/bin/mower.sh
+```
