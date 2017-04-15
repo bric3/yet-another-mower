@@ -7,35 +7,69 @@ import java.util.function.Supplier;
 import com.github.bric3.mower.parser.DefaultMowersInstructionParser;
 import com.github.bric3.mower.parser.InstructionParser;
 
-public class Mowers {
+/**
+ * This is the mowers engine.
+ *
+ * It can be passed an instruction parser that will parse
+ * mowers instructions.
+ *
+ * Can be created via the builder API {@link Mowers#forInstructions(Supplier)}.
+ */
+class Mowers {
     private final InstructionParser instructionParser;
     private final Consumer<Lawn> onLawnInitialization;
     private boolean complete = false;
     private Exception failure;
     private ErrorReporter reporter = ErrorReporter.defaultReporter();
 
-    public Mowers(InstructionParser instructionParser,
-                  Consumer<Lawn> onLawnInitialization) {
+    Mowers(InstructionParser instructionParser,
+           Consumer<Lawn> onLawnInitialization) {
         this.instructionParser = instructionParser;
         this.onLawnInitialization = onLawnInitialization;
     }
 
-    public static MowersBuilder forInstructions(Supplier<InputStream> is) {
+    /**
+     * Fluent builder API to give instructions and customize {@link Mowers}
+     * @param is InputStream of the instructions supplier
+     * @return the builder
+     */
+    static MowersBuilder forInstructions(Supplier<InputStream> is) {
         return new MowersBuilder().instructions(is);
     }
 
-    public boolean isComplete() {
+    /**
+     * Indicates whether or not the mowers run has been completed or not.
+     * Note this may not indicate if there was an error or not during the run,
+     * check {@link #failure} for that.
+     * @return true if complete, false if not
+     */
+    boolean isComplete() {
         return complete;
     }
 
-    public Optional<Exception> failure() {
+    /**
+     * Return the exception after invoking {@link #start()}
+     * @return an Optional that will be either empty or contain an exception.
+     */
+    Optional<Exception> failure() {
         return Optional.ofNullable(failure);
     }
 
-    private Mowers mowIt() {
+    /**
+     * Starts the mowers
+     * @return this
+     */
+    Mowers start() {
+        if(complete) {
+            throw new IllegalStateException("Already completed, recreate a new one!");
+        }
         try(InstructionParser ip = instructionParser) {
+            // Initialize Lawn
             Lawn lawn = ip.parseLawn();
             onLawnInitialization.accept(lawn);
+
+            // Ongoing mower instruction parser
+
             complete = true;
         } catch (Exception ex) {
             reporter.reportException(ex);
@@ -45,24 +79,41 @@ public class Mowers {
         return this;
     }
 
-    public static class MowersBuilder {
+    /**
+     * The Mowers builder
+     */
+    static class MowersBuilder {
         private Supplier<InputStream> instructionIS;
         private Consumer<Lawn> lawnConsumer;
 
-        public MowersBuilder instructions(Supplier<InputStream> is) {
+        /**
+         * Defines where to find the instructions InputStream
+         * @param is the instruction InputStream supplier
+         * @return this
+         */
+        MowersBuilder instructions(Supplier<InputStream> is) {
             this.instructionIS = is;
             return this;
         }
 
-        public MowersBuilder onLawnLine(Consumer<Lawn> lawnConsumer) {
+        /**
+         * Callback on new Lawn, once parsed.
+         * @param lawnConsumer the callback
+         * @return this
+         */
+        MowersBuilder onLawnLine(Consumer<Lawn> lawnConsumer) {
             this.lawnConsumer = lawnConsumer;
             return this;
         }
 
-        public Mowers mowIt() {
+        /**
+         * Create {@link Mowers} and starts it via {@link Mowers#start()}
+         * @return the new Mowers
+         */
+        Mowers mowIt() {
             return new Mowers(new DefaultMowersInstructionParser(instructionIS),
                               lawnConsumer)
-                    .mowIt();
+                    .start();
         }
     }
 }

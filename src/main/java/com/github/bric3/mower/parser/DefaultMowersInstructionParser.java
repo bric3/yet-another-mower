@@ -13,6 +13,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DefaultMowersInstructionParser implements InstructionParser {
     private final BufferedReader instructionsReader;
+    private boolean open = true;
 
     public DefaultMowersInstructionParser(Supplier<InputStream> inputStreamSupplier) {
         instructionsReader = new BufferedReader(new InputStreamReader(inputStreamSupplier.get(), UTF_8));
@@ -20,11 +21,16 @@ public class DefaultMowersInstructionParser implements InstructionParser {
 
     @Override
     public void close() throws IOException {
-        instructionsReader.close();
+        try {
+            instructionsReader.close();
+        } finally {
+            open = false;
+        }
     }
 
     @Override
     public Lawn parseLawn() throws ParseException {
+        canParse();
         try {
             String lawnLine = instructionsReader.readLine();
             return LawnParser.parseToLawn(lawnLine);
@@ -33,4 +39,9 @@ public class DefaultMowersInstructionParser implements InstructionParser {
         }
     }
 
+    private void canParse() {
+        if (!open) {
+            throw new IllegalStateException("parser and  closed");
+        }
+    }
 }
