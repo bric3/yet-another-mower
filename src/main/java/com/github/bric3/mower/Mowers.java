@@ -1,7 +1,9 @@
 package com.github.bric3.mower;
 
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import com.github.bric3.mower.parser.InputStreamInstructionParser;
@@ -18,14 +20,17 @@ import com.github.bric3.mower.parser.InstructionParser;
 class Mowers {
     private final InstructionParser instructionParser;
     private final Consumer<Lawn> onLawnInitialization;
+    private BiConsumer<Mower, MowerInstructions> onNewMower;
     private boolean complete = false;
     private Exception failure;
     private ErrorReporter reporter = ErrorReporter.defaultReporter();
 
     Mowers(InstructionParser instructionParser,
-           Consumer<Lawn> onLawnInitialization) {
-        this.instructionParser = instructionParser;
-        this.onLawnInitialization = onLawnInitialization;
+           Consumer<Lawn> onLawnSetup,
+           BiConsumer<Mower, MowerInstructions> onNewMower) {
+        this.instructionParser = Objects.requireNonNull(instructionParser);
+        this.onLawnInitialization = Objects.requireNonNull(onLawnSetup);
+        this.onNewMower = Objects.requireNonNull(onNewMower);
     }
 
     /**
@@ -64,18 +69,19 @@ class Mowers {
             throw new IllegalStateException("Already completed, recreate a new one!");
         }
         try(InstructionParser ip = instructionParser) {
-            // Initialize Lawn // TODO enforce pars method orders / refactor
+            // Initialize Lawn // TODO enforce parse methods order / refactor
             Lawn lawn = ip.parseLawn();
             onLawnInitialization.accept(lawn);
 
             // Ongoing mower instruction parser
-            ip.parseMowers((mower, mowerInstructions) -> System.out.println(mower + "\n" + mowerInstructions));
+            ip.parseMowers((mower, mowerInstructions) -> onNewMower.accept(mower, mowerInstructions));
 
-            complete = true;
         } catch (Exception ex) {
             reporter.reportException(ex);
             failure = ex;
             return this;
+        } finally {
+            complete = true;
         }
         return this;
     }
@@ -85,7 +91,8 @@ class Mowers {
      */
     static class MowersBuilder {
         private Supplier<InputStream> instructionIS;
-        private Consumer<Lawn> lawnConsumer;
+        private Consumer<Lawn> lawnConsumer = (lawn) -> {};
+        private BiConsumer<Mower, MowerInstructions> mowerConsumer = (m, inst) -> {};
 
         /**
          * Defines where to find the instructions InputStream
@@ -99,11 +106,21 @@ class Mowers {
 
         /**
          * Callback on new Lawn, once parsed.
-         * @param lawnConsumer the callback
+         * @param onLawnSetup the callback
          * @return this
          */
-        MowersBuilder onLawnLine(Consumer<Lawn> lawnConsumer) {
-            this.lawnConsumer = lawnConsumer;
+        MowersBuilder onLawnSetup(Consumer<Lawn> onLawnSetup) {
+            this.lawnConsumer = onLawnSetup;
+            return this;
+        }
+
+        /**
+         * Callback on new Mower and instruction set, once parsed.
+         * @param onNewMower the callback
+         * @return this
+         */
+        MowersBuilder onNewMower(BiConsumer<Mower, MowerInstructions> onNewMower) {
+            this.mowerConsumer = onNewMower;
             return this;
         }
 
@@ -113,7 +130,8 @@ class Mowers {
          */
         Mowers mowIt() {
             return new Mowers(new InputStreamInstructionParser(instructionIS),
-                              lawnConsumer)
+                              lawnConsumer,
+                              mowerConsumer)
                     .start();
         }
     }

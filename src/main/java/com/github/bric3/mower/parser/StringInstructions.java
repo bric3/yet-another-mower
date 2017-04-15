@@ -3,13 +3,16 @@ package com.github.bric3.mower.parser;
 import java.util.Objects;
 import com.github.bric3.mower.MowerInstructions;
 
+import static java.lang.String.format;
+
 class StringInstructions implements MowerInstructions {
     private final int line;
     private final String instructions;
 
     StringInstructions(int line, String instructions) {
         this.line = line;
-        this.instructions = instructions;
+        this.instructions = Objects.requireNonNull(instructions,
+                                                   format("Line %d: instructions are null", line));
     }
 
     @Override

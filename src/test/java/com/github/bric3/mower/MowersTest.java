@@ -11,7 +11,7 @@ public class MowersTest {
 
     @Test
     public void can_be_started() {
-        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { });
+        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { }, (mower, inst) -> { });
 
         mowers.start();
 
@@ -21,7 +21,7 @@ public class MowersTest {
 
     @Test
     public void cannot_be_started_more_than_once() {
-        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { });
+        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { }, (mower, inst) -> { });
 
         mowers.start();
 

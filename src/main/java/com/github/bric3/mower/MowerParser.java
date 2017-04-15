@@ -25,7 +25,7 @@ public class MowerParser {
                                      Integer.valueOf(matcher.group("y")),
                                      Orientation.valueOf(matcher.group("orientation")));
         }
-        throw new ParseException(format("Line %d ('%s') failed to parse Mower, expected two positive numbers followed by an orientation letter either N, E, W or S all separated by a space e.g. '11 2 N'",
+        throw new ParseException(format("Line %d: ('%s') failed to parse Mower, expected two positive numbers followed by an orientation letter either N, E, W or S all separated by a space e.g. '11 2 N'",
                                         line,
                                         position),
                                  1);

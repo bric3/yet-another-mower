@@ -66,7 +66,7 @@ public class InputStreamInstructionParser implements InstructionParser {
 
     private void canParse() {
         if (!open) {
-            throw new IllegalStateException("parser and  closed");
+            throw new IllegalStateException("parser and closed");
         }
     }
 }

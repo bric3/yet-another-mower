@@ -18,7 +18,7 @@ class LawnParser {
             return new Lawn(new Coordinates(Integer.valueOf(matcher.group("x")),
                                             Integer.valueOf(matcher.group("y"))));
         }
-        throw new ParseException(format("Line 1 ('%s') failed to parse Lawn`, expected two positive numbers separated by a space e.g. '11 2'",
+        throw new ParseException(format("Line 1: ('%s') failed to parse Lawn`, expected two positive numbers separated by a space e.g. '11 2'",
                                         lawnLine),
                                  1);
     }
