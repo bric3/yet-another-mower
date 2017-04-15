@@ -4,18 +4,20 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import com.github.bric3.mower.parser.DefaultMowersInstructionParser;
+import com.github.bric3.mower.parser.InstructionParser;
 
 public class Mowers {
     private final InstructionParser instructionParser;
-    private final Consumer<Lawn> lawnConsumer;
+    private final Consumer<Lawn> onLawnInitialization;
     private boolean complete = false;
     private Exception failure;
     private ErrorReporter reporter = ErrorReporter.defaultReporter();
 
     public Mowers(InstructionParser instructionParser,
-                  Consumer<Lawn> lawnConsumer) {
+                  Consumer<Lawn> onLawnInitialization) {
         this.instructionParser = instructionParser;
-        this.lawnConsumer = lawnConsumer;
+        this.onLawnInitialization = onLawnInitialization;
     }
 
     public static MowersBuilder forInstructions(Supplier<InputStream> is) {
@@ -33,7 +35,7 @@ public class Mowers {
     private Mowers mowIt() {
         try(InstructionParser ip = instructionParser) {
             Lawn lawn = ip.parseLawn();
-            lawnConsumer.accept(lawn);
+            onLawnInitialization.accept(lawn);
             complete = true;
         } catch (Exception ex) {
             reporter.reportException(ex);
