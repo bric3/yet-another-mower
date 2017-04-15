@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class DefaultMowersInstructionParserTest {
+public class InputStreamInstructionParserTest {
 
     @Test
     public void cannot_be_used_after_close() throws Exception {
-        DefaultMowersInstructionParser instructionParser = new DefaultMowersInstructionParser(() -> new ByteArrayInputStream(new byte[0]));
+        InputStreamInstructionParser instructionParser = new InputStreamInstructionParser(() -> new ByteArrayInputStream(new byte[0]));
 
         instructionParser.close();
 

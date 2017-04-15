@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import com.github.bric3.mower.parser.DefaultMowersInstructionParser;
+import com.github.bric3.mower.parser.InputStreamInstructionParser;
 import com.github.bric3.mower.parser.InstructionParser;
 
 /**
@@ -64,11 +64,12 @@ class Mowers {
             throw new IllegalStateException("Already completed, recreate a new one!");
         }
         try(InstructionParser ip = instructionParser) {
-            // Initialize Lawn
+            // Initialize Lawn // TODO enforce pars method orders / refactor
             Lawn lawn = ip.parseLawn();
             onLawnInitialization.accept(lawn);
 
             // Ongoing mower instruction parser
+            ip.parseMowers((mower, mowerInstructions) -> System.out.println(mower + "\n" + mowerInstructions));
 
             complete = true;
         } catch (Exception ex) {
@@ -111,7 +112,7 @@ class Mowers {
          * @return the new Mowers
          */
         Mowers mowIt() {
-            return new Mowers(new DefaultMowersInstructionParser(instructionIS),
+            return new Mowers(new InputStreamInstructionParser(instructionIS),
                               lawnConsumer)
                     .start();
         }
