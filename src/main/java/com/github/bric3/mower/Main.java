@@ -22,6 +22,9 @@ import static java.nio.file.StandardOpenOption.WRITE;
 
 public class Main {
 
+    private static final int EXECUTED_NORMALLY = 0;
+    private static final int GENERAL_ERROR = 1;
+
     @Parameter(
             names = {"--mowers-input", "-i"},
             required = true,
@@ -62,7 +65,7 @@ public class Main {
         jCommander.setProgramName("mower");
         if (help) {
             jCommander.usage();
-            System.exit(1);
+            System.exit(EXECUTED_NORMALLY);
         }
         try {
             jCommander.parse(args);
@@ -70,17 +73,19 @@ public class Main {
             System.out.println("Error: " + pe.getLocalizedMessage());
             System.out.println();
             jCommander.usage();
-            System.exit(1);
+            System.exit(GENERAL_ERROR);
         }
     }
 
-    private Main start() throws IOException {
-        Mowers.forInstructions(uncheck(() -> Files.newInputStream(input, READ)))
-              .useCharset(Charset.forName(inputEncoding))
-              .output(uncheck(() -> Files.newOutputStream(output, CREATE, TRUNCATE_EXISTING, WRITE)))
-              .mowIt();
+    private void start() throws IOException {
+        Mowers mowers = Mowers.forInstructions(uncheck(() -> Files.newInputStream(input, READ)))
+                              .useCharset(Charset.forName(inputEncoding))
+                              .output(uncheck(() -> Files.newOutputStream(output, CREATE, TRUNCATE_EXISTING, WRITE)))
+                              .mowIt();
 
-        return this;
+        if (mowers.failure().isPresent()) {
+            System.exit(GENERAL_ERROR);
+        }
     }
 
     private <T> Supplier<T> uncheck(IOSupplier<T> ioSupplier) {
