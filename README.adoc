@@ -1,10 +1,9 @@
 = Mower
 
-//image:https://travis-ci.org/bric3/yet-another-mower.svg?branch=master["Build Status", link="https://travis-ci.org/bric3/yet-another-mower"]
+image:https://travis-ci.org/bric3/yet-another-mower.svg?branch=master["Build Status", link="https://travis-ci.org/bric3/yet-another-mower"]
 
 
-A simple mowers
-
+=== A simple mowers orchestrator
 
 This project requires java 8 to run. And the launch scripts expect a unix environment (Linux, OSX will do).
 
@@ -25,3 +24,15 @@ ls -l target/mower-42.0-SNAPSHOT.tar.gz
     --mowers-input mower-instructions.txt \
     --mowers-output mowers-location.txt
 ```
+
+
+=== Future improvements :
+
+- [ ] Learn programming to babies, or at the very least take care of
+      themselves in order to be able to get more time.
+- [ ] Use file channels to improve file performance, extends `Mowers.MowerBuilder` to
+      pass Channel based implementation for reader and writer
+- [ ] Improve parsing code
+- [ ] Possibly remove some enums
+- [ ] REST server
+- [ ] Java 9, try `jlink`
