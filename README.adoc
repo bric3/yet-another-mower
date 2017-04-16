@@ -1,6 +1,6 @@
 = Mower
 
-image:https://travis-ci.org/bric3/dead-simple-memcached-server.svg?branch=master["Build Status", link="https://travis-ci.org/bric3/dead-simple-memcached-server"]
+//image:https://travis-ci.org/bric3/yet-another-mower.svg?branch=master["Build Status", link="https://travis-ci.org/bric3/yet-another-mower"]
 
 
 A simple mowers
@@ -16,6 +16,12 @@ mvn clean package
 ls -l target/mower-42.0-SNAPSHOT.tar.gz
 
 
-# run it from target
+# run it from target, and discover usage
 ./target/mower/bin/mower.sh
+
+# run it from target with instruction file to mow
+# expected encoding is UTF-8, can be overridden with --encoding
+./target/mower/bin/mower.sh \
+    --mowers-input mower-instructions.txt \
+    --mowers-output mowers-location.txt
 ```
