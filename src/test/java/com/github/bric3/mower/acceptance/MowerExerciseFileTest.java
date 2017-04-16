@@ -1,9 +1,11 @@
-package com.github.bric3.mower;
+package com.github.bric3.mower.acceptance;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Stack;
+import com.github.bric3.mower.Mower;
+import com.github.bric3.mower.Mowers;
 import org.junit.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;

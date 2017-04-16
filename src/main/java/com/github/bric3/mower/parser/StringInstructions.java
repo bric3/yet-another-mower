@@ -1,6 +1,10 @@
 package com.github.bric3.mower.parser;
 
+import java.text.ParseException;
 import java.util.Objects;
+import java.util.function.IntFunction;
+import java.util.stream.Stream;
+import com.github.bric3.mower.MowerInstruction;
 import com.github.bric3.mower.MowerInstructions;
 
 import static java.lang.String.format;
@@ -12,7 +16,23 @@ class StringInstructions implements MowerInstructions {
     StringInstructions(int line, String instructions) {
         this.line = line;
         this.instructions = Objects.requireNonNull(instructions,
-                                                   format("Line %d: instructions are null", line));
+                                                   format("Line %d: instructions string cannot be 'null'", line));
+    }
+
+    @Override
+    public Stream<MowerInstruction> stream() {
+        return instructions.chars()
+                           .mapToObj(new IntFunction<MowerInstruction>() {
+                               int charPositionCounter = 1;
+                               @Override
+                               public MowerInstruction apply(int character) {
+                                   try {
+                                       return MowerInstruction.parseCommand(line, charPositionCounter++, (char) character);
+                                   } catch (ParseException e) {
+                                       throw new RuntimeException(e);
+                                   }
+                               }
+                           });
     }
 
     @Override

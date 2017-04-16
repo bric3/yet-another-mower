@@ -15,6 +15,22 @@ public class Coordinates {
         return new Coordinates(x, y);
     }
 
+    public Coordinates xMinusOne() {
+        return new Coordinates(x - 1, y);
+    }
+
+    public Coordinates yPlusOne() {
+        return new Coordinates(x, y + 1);
+    }
+
+    public Coordinates yMinusOne() {
+        return new Coordinates(x, y - 1);
+    }
+
+    public Coordinates xPlusOne() {
+        return new Coordinates(x + 1, y);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

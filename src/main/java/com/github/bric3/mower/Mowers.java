@@ -17,7 +17,7 @@ import com.github.bric3.mower.parser.InstructionParser;
  *
  * Can be created via the builder API {@link Mowers#forInstructions(Supplier)}.
  */
-class Mowers {
+public class Mowers {
     private final InstructionParser instructionParser;
     private final Consumer<Lawn> onLawnInitialization;
     private BiConsumer<Mower, MowerInstructions> onNewMower;
@@ -38,7 +38,7 @@ class Mowers {
      * @param is InputStream of the instructions supplier
      * @return the builder
      */
-    static MowersBuilder forInstructions(Supplier<InputStream> is) {
+    public static MowersBuilder forInstructions(Supplier<InputStream> is) {
         return new MowersBuilder().instructions(is);
     }
 
@@ -48,7 +48,7 @@ class Mowers {
      * check {@link #failure} for that.
      * @return true if complete, false if not
      */
-    boolean isComplete() {
+    public boolean isComplete() {
         return complete;
     }
 
@@ -56,7 +56,7 @@ class Mowers {
      * Return the exception after invoking {@link #start()}
      * @return an Optional that will be either empty or contain an exception.
      */
-    Optional<Exception> failure() {
+    public Optional<Exception> failure() {
         return Optional.ofNullable(failure);
     }
 
@@ -74,7 +74,10 @@ class Mowers {
             onLawnInitialization.accept(lawn);
 
             // Ongoing mower instruction parser
-            ip.parseMowers((mower, mowerInstructions) -> onNewMower.accept(mower, mowerInstructions));
+            ip.parseMowers((mower, mowerInstructions) -> {
+                mower.mow(lawn, mowerInstructions);
+                onNewMower.accept(mower, mowerInstructions);
+            });
 
         } catch (Exception ex) {
             reporter.reportException(ex);
@@ -89,7 +92,7 @@ class Mowers {
     /**
      * The Mowers builder
      */
-    static class MowersBuilder {
+    public static class MowersBuilder {
         private Supplier<InputStream> instructionIS;
         private Consumer<Lawn> lawnConsumer = (lawn) -> {};
         private BiConsumer<Mower, MowerInstructions> mowerConsumer = (m, inst) -> {};
@@ -99,7 +102,7 @@ class Mowers {
          * @param is the instruction InputStream supplier
          * @return this
          */
-        MowersBuilder instructions(Supplier<InputStream> is) {
+        public MowersBuilder instructions(Supplier<InputStream> is) {
             this.instructionIS = is;
             return this;
         }
@@ -109,7 +112,7 @@ class Mowers {
          * @param onLawnSetup the callback
          * @return this
          */
-        MowersBuilder onLawnSetup(Consumer<Lawn> onLawnSetup) {
+        public MowersBuilder onLawnSetup(Consumer<Lawn> onLawnSetup) {
             this.lawnConsumer = onLawnSetup;
             return this;
         }
@@ -119,7 +122,7 @@ class Mowers {
          * @param onNewMower the callback
          * @return this
          */
-        MowersBuilder onNewMower(BiConsumer<Mower, MowerInstructions> onNewMower) {
+        public MowersBuilder onNewMower(BiConsumer<Mower, MowerInstructions> onNewMower) {
             this.mowerConsumer = onNewMower;
             return this;
         }
@@ -128,7 +131,7 @@ class Mowers {
          * Create {@link Mowers} and starts it via {@link Mowers#start()}
          * @return the new Mowers
          */
-        Mowers mowIt() {
+        public Mowers mowIt() {
             return new Mowers(new InputStreamInstructionParser(instructionIS),
                               lawnConsumer,
                               mowerConsumer)

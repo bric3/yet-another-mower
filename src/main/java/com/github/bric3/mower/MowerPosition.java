@@ -19,6 +19,10 @@ public class MowerPosition {
         return new MowerPosition(x, y, orientation);
     }
 
+    public static MowerPosition mowerPosition(Coordinates coordinates, Orientation orientation) {
+        return new MowerPosition(coordinates, orientation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
