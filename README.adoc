@@ -34,5 +34,7 @@ ls -l target/mower-42.0-SNAPSHOT.tar.gz
       pass Channel based implementation for reader and writer
 - [ ] Improve parsing code
 - [ ] Possibly remove some enums
+- [ ] Explore engine as a state-machine
+- [ ] Capture Ctrl-C via shutdown hook, and interrupt gracefully the program
 - [ ] REST server
 - [ ] Java 9, try `jlink`

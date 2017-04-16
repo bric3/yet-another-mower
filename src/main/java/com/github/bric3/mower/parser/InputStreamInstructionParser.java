@@ -49,6 +49,7 @@ public class InputStreamInstructionParser implements InstructionParser {
         try {
             while (instructionsReader.ready()) {
                 String mowerStartingPosition = instructionsReader.readLine();
+                // TODO replace readLine by something that wont affect performance for very long instructions line
                 String mowerInstructions = instructionsReader.readLine();
 
                 mowerConsumer.accept(MowerParser.parseToMower(lineCount,
