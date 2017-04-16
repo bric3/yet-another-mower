@@ -1,9 +1,11 @@
-package com.github.bric3.mower;
+package com.github.bric3.mower.parser;
 
 import java.text.ParseException;
+import com.github.bric3.mower.Mower;
+import com.github.bric3.mower.MowerPosition;
 import org.junit.Test;
 
-import static com.github.bric3.mower.MowerParser.parseToMower;
+import static com.github.bric3.mower.parser.MowerParser.parseToMower;
 import static com.github.bric3.mower.Orientation.N;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,6 +36,8 @@ public class MowerParserTest {
         assertThatThrownBy(() -> parseToMower(73, "-1 2 N"))
                 .isInstanceOf(ParseException.class);
         assertThatThrownBy(() -> parseToMower(73, "1 2 Q"))
+                .isInstanceOf(ParseException.class);
+        assertThatThrownBy(() -> parseToMower(73, "1 25723570457405704 E"))
                 .isInstanceOf(ParseException.class);
         assertThatThrownBy(() -> parseToMower(73, ""))
                 .isInstanceOf(ParseException.class);

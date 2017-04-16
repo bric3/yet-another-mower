@@ -57,7 +57,7 @@ public enum Orientation {
         this.forwardFunction = forwardFunction;
     }
 
-    static String joinedValues() {
+    public static String joinedValues() {
         return Arrays.stream(values())
                      .map(Enum::toString)
                      .collect(joining());

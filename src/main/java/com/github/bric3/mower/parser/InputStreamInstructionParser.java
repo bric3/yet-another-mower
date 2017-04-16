@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import com.github.bric3.mower.Lawn;
 import com.github.bric3.mower.Mower;
 import com.github.bric3.mower.MowerInstructions;
-import com.github.bric3.mower.MowerParser;
 
 public class InputStreamInstructionParser implements InstructionParser {
     private final BufferedReader instructionsReader;

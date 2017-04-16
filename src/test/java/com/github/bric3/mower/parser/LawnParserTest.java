@@ -27,6 +27,8 @@ public class LawnParserTest {
                 .isInstanceOf(ParseException.class);
         assertThatThrownBy(() -> LawnParser.parseToLawn("4L 3L"))
                 .isInstanceOf(ParseException.class);
+        assertThatThrownBy(() -> LawnParser.parseToLawn("3643747236472365972356 3"))
+                .isInstanceOf(ParseException.class);
         assertThatThrownBy(() -> LawnParser.parseToLawn("4L"))
                 .isInstanceOf(ParseException.class);
         assertThatThrownBy(() -> LawnParser.parseToLawn(""))
