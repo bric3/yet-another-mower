@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.text.ParseException;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import com.github.bric3.mower.Lawn;
@@ -54,7 +55,8 @@ public class InputStreamInstructionParser implements InstructionParser {
 
                 mowerConsumer.accept(MowerParser.parseToMower(lineCount,
                                                               mowerStartingPosition),
-                                     new StringInstructions(lineCount + 1, mowerInstructions));
+                                     new StringInstructions(lineCount + 1,
+                                                            Objects.toString(mowerInstructions, "")));
                 
                 lineCount += 2;
             }
