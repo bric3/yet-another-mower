@@ -62,7 +62,7 @@ FFRFFRFRRF
 
 == The release
 
-Send us a mail with the source code and any resource link to arnaud.lemaire@blablacar.com
+Send us a mail with the source code and any resource link to [edited]
 
 ---
 
