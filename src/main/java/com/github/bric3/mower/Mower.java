@@ -36,7 +36,18 @@ public class Mower {
                                                            throw new UnsupportedOperationException();
                                                        })
                                               .pop();
-        System.out.println("final position of " + mowerLine + ":" + mowerFinalPosition);
+    }
+
+    public MowerPosition getFinalPosition() {
+        if (mowerFinalPosition == null) {
+            throw new IllegalStateException("Mower did not mow any lawn yet");
+        }
+        return mowerFinalPosition;
+    }
+
+    public Mower moveTo(MowerPosition position) {
+        mowerFinalPosition = position;
+        return this;
     }
 
     @Override
@@ -45,18 +56,21 @@ public class Mower {
         if (o == null || getClass() != o.getClass()) return false;
         Mower mower = (Mower) o;
         return mowerLine == mower.mowerLine &&
+               Objects.equals(mowerFinalPosition, mower.mowerFinalPosition) &&
                Objects.equals(mowerStartPosition, mower.mowerStartPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mowerLine, mowerStartPosition);
+        return Objects.hash(mowerLine, mowerFinalPosition, mowerStartPosition);
     }
 
     @Override
     public String toString() {
         return "Mower{" +
                "mowerLine=" + mowerLine +
+               ", mowerStartPosition=" + mowerStartPosition +
+               ", mowerFinalPosition=" + mowerFinalPosition +
                '}';
     }
 }

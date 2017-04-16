@@ -45,7 +45,7 @@ public class InputStreamInstructionParser implements InstructionParser {
     }
 
     @Override
-    public void parseMowers(BiConsumer<Mower, MowerInstructions> mowerConsumer) throws ParseException {
+    public void parseMowersAndThen(BiConsumer<Mower, MowerInstructions> mowerConsumer) throws ParseException {
         canParse();
         int lineCount = 2;
         try {
@@ -68,7 +68,7 @@ public class InputStreamInstructionParser implements InstructionParser {
 
     private void canParse() {
         if (!open) {
-            throw new IllegalStateException("parser and closed");
+            throw new IllegalStateException("parser closed");
         }
     }
 }

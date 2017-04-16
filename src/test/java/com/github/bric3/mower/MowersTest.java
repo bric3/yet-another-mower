@@ -1,6 +1,7 @@
 package com.github.bric3.mower;
 
 import com.github.bric3.mower.parser.InstructionParser;
+import com.github.bric3.mower.result.ResultWriter;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +12,10 @@ public class MowersTest {
 
     @Test
     public void can_be_started() {
-        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { }, (mower, inst) -> { });
+        Mowers mowers = new Mowers(mock(InstructionParser.class),
+                                   mock(ResultWriter.class),
+                                   lawn -> { },
+                                   (mower, inst) -> { });
 
         mowers.start();
 
@@ -21,7 +25,10 @@ public class MowersTest {
 
     @Test
     public void cannot_be_started_more_than_once() {
-        Mowers mowers = new Mowers(mock(InstructionParser.class), lawn -> { }, (mower, inst) -> { });
+        Mowers mowers = new Mowers(mock(InstructionParser.class),
+                                   mock(ResultWriter.class),
+                                   lawn -> { },
+                                   (mower, inst) -> { });
 
         mowers.start();
 

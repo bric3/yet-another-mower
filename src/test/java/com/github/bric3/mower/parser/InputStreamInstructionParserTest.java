@@ -33,7 +33,7 @@ public class InputStreamInstructionParserTest {
         InputStreamInstructionParser instructionParser = parser("1 1 N\nLFR".getBytes(UTF_8));
 
         AtomicBoolean invoked = new AtomicBoolean(false);
-        instructionParser.parseMowers((mower, instruction) -> {
+        instructionParser.parseMowersAndThen((mower, instruction) -> {
             invoked.set(true);
             assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 1, N)));
             assertThat(instruction.stream()).containsExactly(L, F, R);
@@ -46,7 +46,7 @@ public class InputStreamInstructionParserTest {
     public void should_fail_to_parse_incomplete_mower_line() throws ParseException {
         InputStreamInstructionParser instructionParser = parser("1 X N\nLFR".getBytes(UTF_8));
 
-        assertThatThrownBy(() -> instructionParser.parseMowers((mower, instruction) -> fail("should not be invoked"))).isInstanceOf(ParseException.class);
+        assertThatThrownBy(() -> instructionParser.parseMowersAndThen((mower, instruction) -> fail("should not be invoked"))).isInstanceOf(ParseException.class);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class InputStreamInstructionParserTest {
         InputStreamInstructionParser instructionParser = parser("1 1 N".getBytes(UTF_8));
 
         AtomicBoolean invoked = new AtomicBoolean(false);
-        instructionParser.parseMowers((mower, instruction) -> {
+        instructionParser.parseMowersAndThen((mower, instruction) -> {
             invoked.set(true);
             assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 1, N)));
             assertThat(instruction.stream()).isEmpty();
@@ -68,7 +68,7 @@ public class InputStreamInstructionParserTest {
         InputStreamInstructionParser instructionParser = parser("1 1 N\n".getBytes(UTF_8));
 
         AtomicBoolean invoked = new AtomicBoolean(false);
-        instructionParser.parseMowers((mower, instruction) -> {
+        instructionParser.parseMowersAndThen((mower, instruction) -> {
             invoked.set(true);
             assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 1, N)));
             assertThat(instruction.stream()).isEmpty();

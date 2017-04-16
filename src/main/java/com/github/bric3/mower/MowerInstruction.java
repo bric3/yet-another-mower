@@ -17,7 +17,6 @@ public enum MowerInstruction {
     },
     F {
         void apply(Stack<MowerPosition> positions, Lawn lawn) {
-            System.out.println("current : " + positions);
             MowerPosition previous = positions.pop();
             Coordinates newCoordinates = previous.orientation.forwardFunction
                                                              .apply(previous.coordinates);

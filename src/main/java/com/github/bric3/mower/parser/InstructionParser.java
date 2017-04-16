@@ -9,5 +9,5 @@ import com.github.bric3.mower.MowerInstructions;
 public interface InstructionParser extends AutoCloseable {
     Lawn parseLawn() throws ParseException;
 
-    void parseMowers(BiConsumer<Mower, MowerInstructions> mowerConsumer) throws ParseException;
+    void parseMowersAndThen(BiConsumer<Mower, MowerInstructions> mowerConsumer) throws ParseException;
 }

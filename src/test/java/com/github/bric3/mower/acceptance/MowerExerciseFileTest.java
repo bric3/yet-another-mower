@@ -1,6 +1,8 @@
 package com.github.bric3.mower.acceptance;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Stack;
@@ -17,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class MowerExerciseFileTest {
-    
+
     private String EXPECTED_OUTPUT = "1 3 N\n" +
                                      "5 1 E\n";
 
@@ -63,7 +65,7 @@ public class MowerExerciseFileTest {
         // When
         Mowers mowers = Mowers.forInstructions(() -> is)
                               .onNewMower((mower, instructions) -> {
-                                  assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 2  , N)));
+                                  assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 2, N)));
                               })
                               .mowIt();
 
@@ -84,27 +86,48 @@ public class MowerExerciseFileTest {
                               .mowIt();
 
         // Then
-        assertThat(mowerStack).containsExactly(new Mower(2, mowerPosition(1, 2  , N)),
-                                               new Mower(4, mowerPosition(3, 3  , E)));
+        assertThat(mowerStack).containsExactly(new Mower(2, mowerPosition(1, 2, N)).moveTo(mowerPosition(1, 3, N)),
+                                               new Mower(4, mowerPosition(3, 3, E)).moveTo(mowerPosition(5, 1, E)));
         assertThat(mowers.isComplete()).isTrue();
         assertThat(mowers.failure()).isEmpty();
     }
 
+
     @Test
-    public void should_fail_when_mower_is_missing_instructions() {
+    public void should_output_final_position_of_multiple_mowers_as_expected() throws UnsupportedEncodingException {
         // Given
-        ByteArrayInputStream is = new ByteArrayInputStream("5 5\n1 2 N".getBytes(UTF_8));
+        ByteArrayInputStream is = new ByteArrayInputStream("5 5\n1 2 N\nLFLFLFLFF\n3 3 E\nFFRFFRFRRF\n".getBytes(UTF_8));
 
         // When
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Mowers mowers = Mowers.forInstructions(() -> is)
-                              .onNewMower((mower, instructions) -> fail("should not be invoked"))
+                              .output(() -> outputStream)
                               .mowIt();
 
         // Then
         assertThat(mowers.isComplete()).isTrue();
-        assertThat(mowers.failure().get()).isInstanceOf(NullPointerException.class)
-                                          .hasMessageContaining("Line 3")
-                                          .hasMessageContaining("instructions");
+        assertThat(mowers.failure()).isEmpty();
+        assertThat(outputStream.toString("UTF-8")).isEqualTo("1 3 N\n5 1 E\n");
+    }
+
+
+    @Test
+    public void should_allow_empty_mower_instructions_line() {
+        // Given
+        ByteArrayInputStream is = new ByteArrayInputStream("5 5\n1 2 N".getBytes(UTF_8));
+        Stack<Mower> mowerStack = new Stack<>();
+
+        // When
+        Mowers mowers = Mowers.forInstructions(() -> is)
+                              .onNewMower((mower, instructions) -> {
+                                  assertThat(mower).isEqualTo(new Mower(2, mowerPosition(1, 2, N)));
+                                  assertThat(instructions.stream()).isEmpty();
+                              })
+                              .mowIt();
+
+        // Then
+        assertThat(mowers.isComplete()).isTrue();
+        assertThat(mowers.failure()).isEmpty();
     }
 
     @Test
