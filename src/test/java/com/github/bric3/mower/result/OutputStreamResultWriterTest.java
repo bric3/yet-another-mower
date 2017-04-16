@@ -3,6 +3,7 @@ package com.github.bric3.mower.result;
 import java.io.ByteArrayOutputStream;
 import org.junit.Test;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static com.github.bric3.mower.MowerPosition.mowerPosition;
 import static com.github.bric3.mower.Orientation.W;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +14,7 @@ public class OutputStreamResultWriterTest {
     @Test
     public void can_write_position_as_line_with_a_new_line() throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        OutputStreamResultWriter rw = new OutputStreamResultWriter(() -> outputStream);
+        OutputStreamResultWriter rw = new OutputStreamResultWriter(() -> outputStream, UTF_8);
 
         rw.writeMowerFinalPosition(mowerPosition(73, 73, W));
         rw.close();
@@ -24,7 +25,7 @@ public class OutputStreamResultWriterTest {
 
     @Test
     public void cannot_write_once_closed() throws Exception {
-        OutputStreamResultWriter rw = new OutputStreamResultWriter(ByteArrayOutputStream::new);
+        OutputStreamResultWriter rw = new OutputStreamResultWriter(ByteArrayOutputStream::new, UTF_8);
 
         rw.close();
 

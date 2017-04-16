@@ -3,6 +3,8 @@ package com.github.bric3.mower;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -112,6 +114,7 @@ public class Mowers {
         };
         private Consumer<Lawn> lawnConsumer = (lawn) -> {};
         private BiConsumer<Mower, MowerInstructions> mowerConsumer = (m, inst) -> {};
+        private Charset charset = StandardCharsets.UTF_8;
 
         /**
          * Defines where to find the instructions InputStream
@@ -158,11 +161,21 @@ public class Mowers {
          * @return the new Mowers
          */
         public Mowers mowIt() {
-            return new Mowers(new InputStreamInstructionParser(instructionInputStreamSupplier),
-                              new OutputStreamResultWriter(outputStreamSupplier),
+            return new Mowers(new InputStreamInstructionParser(instructionInputStreamSupplier, charset),
+                              new OutputStreamResultWriter(outputStreamSupplier, charset),
                               lawnConsumer,
                               mowerConsumer)
                     .start();
+        }
+
+        /**
+         * Overrides default charsetUTF-8 ()
+         * @param charset the charset
+         * @return this
+         */
+        public MowersBuilder useCharset(Charset charset) {
+            this.charset = charset;
+            return this;
         }
     }
 }

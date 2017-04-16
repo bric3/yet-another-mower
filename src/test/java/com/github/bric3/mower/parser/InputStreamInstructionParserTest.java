@@ -85,7 +85,7 @@ public class InputStreamInstructionParserTest {
     }
 
     private InputStreamInstructionParser parser(byte[] bytes) {
-        return new InputStreamInstructionParser(() -> new ByteArrayInputStream(bytes));
+        return new InputStreamInstructionParser(() -> new ByteArrayInputStream(bytes), UTF_8);
     }
 
 

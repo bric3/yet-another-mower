@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -14,14 +15,12 @@ import com.github.bric3.mower.Mower;
 import com.github.bric3.mower.MowerInstructions;
 import com.github.bric3.mower.MowerParser;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 public class InputStreamInstructionParser implements InstructionParser {
     private final BufferedReader instructionsReader;
     private boolean open = true;
 
-    public InputStreamInstructionParser(Supplier<InputStream> inputStreamSupplier) {
-        instructionsReader = new BufferedReader(new InputStreamReader(inputStreamSupplier.get(), UTF_8));
+    public InputStreamInstructionParser(Supplier<InputStream> inputStreamSupplier, Charset charset) {
+        instructionsReader = new BufferedReader(new InputStreamReader(inputStreamSupplier.get(), charset));
     }
 
     @Override

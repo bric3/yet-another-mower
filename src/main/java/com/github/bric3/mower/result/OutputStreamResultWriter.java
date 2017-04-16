@@ -2,7 +2,9 @@ package com.github.bric3.mower.result;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.function.Supplier;
 import com.github.bric3.mower.MowerPosition;
 
@@ -11,8 +13,11 @@ public class OutputStreamResultWriter implements ResultWriter {
     private final PrintWriter printWriter;
     private boolean open = true;
 
-    public OutputStreamResultWriter(Supplier<OutputStream> outputStreamSupplier) {
-        printWriter = new PrintWriter(new BufferedOutputStream(outputStreamSupplier.get()));
+    public OutputStreamResultWriter(Supplier<OutputStream> outputStreamSupplier, Charset charset) {
+        printWriter = new PrintWriter(new OutputStreamWriter(
+                new BufferedOutputStream(outputStreamSupplier.get()),
+                charset)
+        );
     }
 
     @Override
